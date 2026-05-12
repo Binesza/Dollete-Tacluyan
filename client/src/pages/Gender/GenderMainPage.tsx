@@ -14,7 +14,8 @@ const GenderMainPage = () => {
         isVisible: toastMessageIsVisible,
         showToastMessage,
         closeToastMessage,
-    } = useToastMessage("", false)
+        isFailed,
+    } = useToastMessage("", false, false)
 
     const { refresh, handleRefresh } = useRefresh(false)
 
@@ -34,13 +35,12 @@ const GenderMainPage = () => {
         <>
             <ToastMessage
                 message={toastMessage}
-                isSuccess
+                type={isFailed ? "error" : "success"}
                 isVisible={toastMessageIsVisible}
                 onClose={closeToastMessage}
             />
 
             <div className="grid grid-cols-2 gap-4">
-
                 <div className="col-span-2 md:col-span-1">
                     <AddGenderForm
                         onGenderAdded={showToastMessage}
@@ -51,7 +51,6 @@ const GenderMainPage = () => {
                 <div className="col-span-2 md:col-span-1">
                     <GenderList refreshKey={refresh} />
                 </div>
-
             </div>
         </>
     )

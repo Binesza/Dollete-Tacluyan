@@ -2,44 +2,33 @@
 
 namespace Database\Factories;
 
+use App\Models\Gender;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
-        ];
-    }
+        $birthDate = fake()->date();
+        $age = date_diff(date_create($birthDate), date_create('now'))->y;
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+        $gender = Gender::inRandomOrder()->first();
+
+        return [
+            'first_name' => fake()->firstName(),
+            'middle_name' => fake()->lastName(),
+            'last_name' => fake()->lastName(),
+            'suffix_name' => fake()->suffix(),
+            'gender_id' => $gender?->gender_id ?? 1,
+            'birth_date' => $birthDate,
+            'age' => $age,
+            'username' => strtolower(fake()->firstName() . fake()->lastName()),
+            'password' => Hash::make('password123'),
+        ];
     }
 }

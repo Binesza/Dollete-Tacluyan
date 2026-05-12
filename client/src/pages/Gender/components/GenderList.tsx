@@ -6,10 +6,11 @@ import {
     TableHeader,
     TableRow
 } from "../../../components/Table"
-import type { GenderColumns } from "../../../interfaces/GenderColumns"
+
 import GenderService from "../../../services/GenderService"
 import Spinner from "../../../components/Spinner/Spinner"
 import { Link } from "react-router-dom"
+import type { GenderColumns } from "../../../interfaces/GenderInterface"
 
 interface GenderListProps {
     refreshKey: boolean

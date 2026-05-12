@@ -2,24 +2,34 @@
 
 namespace Database\Seeders;
 
+use App\Models\Gender;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Gender::create(['gender' => 'Male']);
+        Gender::create(['gender' => 'Female']);
+        Gender::create(['gender' => 'Prefer Not to Say']);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $birthDate = fake()->date();
+        $age = date_diff(date_create($birthDate), date_create('now'))->y;
+
+        User::create([
+            'first_name' => 'Viness',
+            'middle_name' => 'Judillasen',
+            'last_name' => 'Tacluyan',
+            'suffix_name' => null,
+            'gender_id' => 1,
+            'birth_date' => $birthDate,
+            'age' => $age,
+            'username' => 'vinesss',
+            'password' => Hash::make('viness12'),
         ]);
+
+        User::factory(10)->create();
     }
 }

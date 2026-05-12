@@ -38,9 +38,9 @@ const GenderService = {
     },
     destroyGender: async (genderId: string | number) => {
         try {
-            const response = await AxiosInstance.put(
+            const response = await AxiosInstance.delete(
                 `/gender/destroyGender/${genderId}`
-            );
+            )
             return response
         } catch (error) {
             throw error

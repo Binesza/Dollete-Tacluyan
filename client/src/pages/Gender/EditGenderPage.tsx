@@ -10,14 +10,15 @@ const EditGenderPage = () => {
 
     const {
         message: toastMessage,
+        isFailed,
         isVisible: toastMessageIsVisible,
         showToastMessage,
         closeToastMessage
-    } = useToastMessage('', false)
+    } = useToastMessage('', false, false)
 
     return (
         <>
-            <ToastMessage message={toastMessage} isVisible={toastMessageIsVisible} isSuccess onClose={closeToastMessage} />
+            <ToastMessage message={toastMessage} isVisible={toastMessageIsVisible} isFailed={isFailed} onClose={closeToastMessage} />
             <EditGenderForm onGenderUpdated={showToastMessage} />
         </>
     )

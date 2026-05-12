@@ -9,11 +9,29 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function loadUsers()
+    public function loadUsers(Request $request)
     {
+        $search = $request->input('search');
+
         $users = User::with(['gender'])
+        ->leftJoin('tbl_genders', 'tbl_users.gender_id', '=', 'tbl_genders.gender_id')
             ->where('tbl_users.is_deleted', false)
-            ->get();
+            ->orderBy('tbl_users.last_name', 'asc')
+            ->orderBy('tbl_users.first_name', 'asc')
+            ->orderBy('tbl_users.middle_name', 'asc')
+            ->orderBy('tbl_users.suffix_name', 'asc');
+
+        if ($search) {
+            $users->where(function ($query) use ($search) {
+                $query->where('tbl_users.first_name', 'like', "%{$search}%")
+                    ->orWhere('tbl_users.middle_name', 'like', "%{$search}%")
+                    ->orWhere('tbl_users.last_name', 'like', "%{$search}%")
+                    ->orWhere('tbl_users.suffix_name', 'like', "%{$search}%")
+                    ->orWhere('tbl_genders.gender', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $users->paginate(15);
 
         return response()->json([
             'users' => $users
@@ -36,7 +54,6 @@ class UserController extends Controller
                 Rule::unique('tbl_users', 'username')
             ],
             'password' => ['required', 'min:6', 'max:12', 'confirmed'],
-            'password_confirmation' => ['required', 'min:6', 'max:12']
         ]);
 
         $age = date_diff(
@@ -53,7 +70,7 @@ class UserController extends Controller
             'birth_date' => $validated['birth_date'],
             'age' => $age,
             'username' => $validated['username'],
-            'password' => $validated['password']
+            'password' => $validated['password'] // ideally hash this
         ]);
 
         return response()->json([
@@ -98,6 +115,17 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User Successfully Updated.',
             'user' => $user->load('gender')
+        ], 200);
+    }
+
+    public function destroyUser(User $user)
+    {
+        $user->update([
+            'is_deleted' => true
+        ]);
+
+        return response()->json([
+            'message' => 'User Successfully Deleted.'
         ], 200);
     }
 }
